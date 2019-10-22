@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Author: rudeigerc <rudeigerc@gmail.com>
 
-import sys
-import getopt
 import csv
+import getopt
 import logging
+import sys
 
 
 def process(file):
@@ -31,7 +31,8 @@ def process(file):
 
 if __name__ == '__main__':
     logger = logging.getLogger(__name__)
-    logging.basicConfig(format='%(asctime)s: %(levelname)s: %(message)s', level=logging.DEBUG)
+    logging.basicConfig(format='%(asctime)s: %(levelname)s: %(message)s',
+                        level=logging.DEBUG)
 
     if len(sys.argv) == 1:
         logging.error('parameter error')

@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 # Author: rudeigerc <rudeigerc@gmail.com>
 
-import sys
-import getopt
-import logging
-import getpass
-from xml.etree.ElementTree import Element, SubElement, tostring, Comment, ElementTree
-from xml.dom import minidom
 import csv
+import getopt
+import getpass
+import logging
+import sys
 from datetime import datetime
+from xml.dom import minidom
+from xml.etree.ElementTree import (Comment, Element, ElementTree, SubElement,
+                                   tostring)
 
 
 def prettify(elem):
@@ -19,7 +20,9 @@ def prettify(elem):
 
 def parse_time(time):
     time = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
-    return datetime.strftime(time.astimezone(), '{}%z'.format(time.isoformat(timespec='milliseconds')))
+    return datetime.strftime(
+        time.astimezone(),
+        '{}%z'.format(time.isoformat(timespec='milliseconds')))
 
 
 def parse_csv(file):
@@ -38,45 +41,86 @@ def parse_csv(file):
 
 def parse_header(root):
     extensions = [
-        Element('extension', {
-            'name': 'Concept',
-            'prefix': 'concept',
-            'url': 'http://www.xes-standard.org/concept.xesext'
-        }), Element('extension', {
-            'name': 'Time',
-            'prefix': 'time',
-            'url': 'http://www.xes-standard.org/time.xesext'
-        }), Element('extension', {
-            'name': 'Organizational',
-            'prefix': 'org',
-            'url': 'http://www.xes-standard.org/org.xesext'
-        }), Element('extension', {
-            'name': 'Lifecycle',
-            'prefix': 'lifecycle',
-            'url': 'http://www.xes-standard.org/lifecycle.xesext'
-        })
+        Element(
+            'extension', {
+                'name': 'Concept',
+                'prefix': 'concept',
+                'url': 'http://www.xes-standard.org/concept.xesext'
+            }),
+        Element(
+            'extension', {
+                'name': 'Time',
+                'prefix': 'time',
+                'url': 'http://www.xes-standard.org/time.xesext'
+            }),
+        Element(
+            'extension', {
+                'name': 'Organizational',
+                'prefix': 'org',
+                'url': 'http://www.xes-standard.org/org.xesext'
+            }),
+        Element(
+            'extension', {
+                'name': 'Lifecycle',
+                'prefix': 'lifecycle',
+                'url': 'http://www.xes-standard.org/lifecycle.xesext'
+            })
     ]
     global_trace = Element('global', {'scope': 'trace'})
-    global_trace.append(Element('string', {'key': 'concept:name', 'value': 'unknown'}))
+    global_trace.append(
+        Element('string', {
+            'key': 'concept:name',
+            'value': 'unknown'
+        }))
     global_event = Element('global', {'scope': 'event'})
     global_event_attrs = [
-        Element('string', {'key': 'concept:instance', 'value': 'unknown'}),
-        Element('string', {'key': 'concept:name', 'value': 'unknown'}),
-        Element('date', {'key': 'time:timestamp', 'value': '1970-01-01T00:00:00.000+08:00'}),
-        Element('string', {'key': 'lifecycle:transition', 'value': 'unknown'}),
-        Element('int', {'key': 'duration', 'value': '0'}),
-        Element('string', {'key': 'org:role', 'value': 'unknown'}),
-        Element('string', {'key': 'org:resource', 'value': 'unknown'})
+        Element('string', {
+            'key': 'concept:instance',
+            'value': 'unknown'
+        }),
+        Element('string', {
+            'key': 'concept:name',
+            'value': 'unknown'
+        }),
+        Element('date', {
+            'key': 'time:timestamp',
+            'value': '1970-01-01T00:00:00.000+08:00'
+        }),
+        Element('string', {
+            'key': 'lifecycle:transition',
+            'value': 'unknown'
+        }),
+        Element('int', {
+            'key': 'duration',
+            'value': '0'
+        }),
+        Element('string', {
+            'key': 'org:role',
+            'value': 'unknown'
+        }),
+        Element('string', {
+            'key': 'org:resource',
+            'value': 'unknown'
+        })
     ]
     global_event.extend(global_event_attrs)
     globals = [global_trace, global_event]
     classifiers = [
-        Element('classifier', {'name': 'Activity', 'keys': 'concept:name'}),
+        Element('classifier', {
+            'name': 'Activity',
+            'keys': 'concept:name'
+        }),
         # Element('classifier', {'name': 'Activity and Transition', 'keys': 'concept:name lifecycle:transition'})
     ]
     strings = [
-        Element('string', {'key': 'concept:name', 'value': 'EIS2018-HW1'}),
-        Element('string', {'key': 'creator', 'value': username})
+        Element('string', {
+            'key': 'concept:name',
+            'value': 'EIS2018-HW1'
+        }),
+        Element('string', {
+            'key': 'creator',
+            'value': username
+        })
     ]
 
     root.append(Comment('Generated by csv2xes'))
@@ -88,7 +132,8 @@ def parse_header(root):
 
 if __name__ == '__main__':
     logger = logging.getLogger(__name__)
-    logging.basicConfig(format='%(asctime)s: %(levelname)s: %(message)s', level=logging.DEBUG)
+    logging.basicConfig(format='%(asctime)s: %(levelname)s: %(message)s',
+                        level=logging.DEBUG)
 
     if len(sys.argv) == 1:
         logging.error('parameter error')
@@ -105,25 +150,53 @@ if __name__ == '__main__':
     username = getpass.getuser()
     instances = dict()
 
-    log = Element('log', {'xes.version': '2.0', 'xmlns': 'http://www.xes-standard.org'})
+    log = Element('log', {
+        'xes.version': '2.0',
+        'xmlns': 'http://www.xes-standard.org'
+    })
     parse_header(log)
     parse_csv(input_file)
 
     count = 0
     for instance in instances.items():
         trace = SubElement(log, 'trace')
-        trace.append(Element('string', {'key': 'concept:name', 'value': instance[0]}))
+        trace.append(
+            Element('string', {
+                'key': 'concept:name',
+                'value': instance[0]
+            }))
         for element in instance[1]:
             start_event = Element('event')
             # complete_event = Element('event')
             start_attrs = [
-                Element('string', {'key': 'concept:instance', 'value': str(count)}),
-                Element('string', {'key': 'concept:name', 'value': element[4]}),
-                Element('date', {'key': 'time:timestamp', 'value': parse_time(element[1])}),
-                Element('string', {'key': 'lifecycle:transition', 'value': 'start'}),
-                Element('int', {'key': 'duration', 'value': element[3]}),
-                Element('string', {'key': 'org:role', 'value': element[5]}),
-                Element('string', {'key': 'org:resource', 'value': element[0]})
+                Element('string', {
+                    'key': 'concept:instance',
+                    'value': str(count)
+                }),
+                Element('string', {
+                    'key': 'concept:name',
+                    'value': element[4]
+                }),
+                Element('date', {
+                    'key': 'time:timestamp',
+                    'value': parse_time(element[1])
+                }),
+                Element('string', {
+                    'key': 'lifecycle:transition',
+                    'value': 'start'
+                }),
+                Element('int', {
+                    'key': 'duration',
+                    'value': element[3]
+                }),
+                Element('string', {
+                    'key': 'org:role',
+                    'value': element[5]
+                }),
+                Element('string', {
+                    'key': 'org:resource',
+                    'value': element[0]
+                })
             ]
             '''
             complete_attrs = [
@@ -143,5 +216,7 @@ if __name__ == '__main__':
             count += 1
 
     elementTree = ElementTree(element=log)
-    elementTree.write('{}.xes'.format(input_file.split('.')[0]), encoding='utf-8', xml_declaration=True)
+    elementTree.write('{}.xes'.format(input_file.split('.')[0]),
+                      encoding='utf-8',
+                      xml_declaration=True)
     # print(prettify(log))
