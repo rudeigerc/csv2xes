@@ -22,7 +22,7 @@ def parse_time(time):
     time = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
     return datetime.strftime(
         time.astimezone(),
-        '{}%z'.format(time.isoformat(timespec='milliseconds')))
+        '{}+08:00'.format(time.isoformat(timespec='milliseconds')))
 
 
 def parse_csv(file):
@@ -45,25 +45,25 @@ def parse_header(root):
             'extension', {
                 'name': 'Concept',
                 'prefix': 'concept',
-                'url': 'http://www.xes-standard.org/concept.xesext'
+                'uri': 'http://www.xes-standard.org/concept.xesext'
             }),
         Element(
             'extension', {
                 'name': 'Time',
                 'prefix': 'time',
-                'url': 'http://www.xes-standard.org/time.xesext'
+                'uri': 'http://www.xes-standard.org/time.xesext'
             }),
         Element(
             'extension', {
                 'name': 'Organizational',
                 'prefix': 'org',
-                'url': 'http://www.xes-standard.org/org.xesext'
+                'uri': 'http://www.xes-standard.org/org.xesext'
             }),
         Element(
             'extension', {
                 'name': 'Lifecycle',
                 'prefix': 'lifecycle',
-                'url': 'http://www.xes-standard.org/lifecycle.xesext'
+                'uri': 'http://www.xes-standard.org/lifecycle.xesext'
             })
     ]
     global_trace = Element('global', {'scope': 'trace'})
@@ -115,7 +115,7 @@ def parse_header(root):
     strings = [
         Element('string', {
             'key': 'concept:name',
-            'value': 'EIS2018-HW1'
+            'value': 'BPM2019HW1'
         }),
         Element('string', {
             'key': 'creator',
@@ -150,10 +150,7 @@ if __name__ == '__main__':
     username = getpass.getuser()
     instances = dict()
 
-    log = Element('log', {
-        'xes.version': '2.0',
-        'xmlns': 'http://www.xes-standard.org'
-    })
+    log = Element('log', {'xes.version': '2.0', 'xes.features': ''})
     parse_header(log)
     parse_csv(input_file)
 
